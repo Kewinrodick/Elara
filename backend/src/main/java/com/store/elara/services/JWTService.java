@@ -33,19 +33,18 @@ public class JWTService {
         }
     }
 
-    public String generateToken(String name) {
+    public String generateToken(UserDetails userDetails) {
         HashMap<String, Object> claims = new HashMap<String, Object>();
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(name)
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30)) // valid for 30 min
                 .and()
                 .signWith(getKey())
                 .compact();
-
 
     }
 

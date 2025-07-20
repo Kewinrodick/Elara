@@ -1,9 +1,6 @@
 package com.store.elara.mappers;
 
-import com.store.elara.dtos.ChangePasswordRequest;
-import com.store.elara.dtos.RegisterUserRequest;
-import com.store.elara.dtos.UpdateUserRequest;
-import com.store.elara.dtos.UserDto;
+import com.store.elara.dtos.*;
 import com.store.elara.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -12,7 +9,7 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     UserDto toDto(User user);
 
-    User toEntity(RegisterUserRequest request);
+    User toEntity(LoginRequest request);
 
     void update(UpdateUserRequest updateUserRequest, @MappingTarget User user);
 }

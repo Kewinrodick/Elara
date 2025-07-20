@@ -2,6 +2,7 @@ package com.store.elara.controllers;
 
 import com.store.elara.dtos.AuthRequest;
 import com.store.elara.dtos.CommonResponse;
+import com.store.elara.dtos.LoginRequest;
 import com.store.elara.services.UserService;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse> signup(@RequestBody AuthRequest authRequest) {
         CommonResponse commonResponse = userService.signin(authRequest);
+        return ResponseEntity.status(commonResponse.getCode()).body(commonResponse);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<CommonResponse> login(@RequestBody LoginRequest loginRequest) {
+        CommonResponse commonResponse = userService.login(loginRequest);
         return ResponseEntity.status(commonResponse.getCode()).body(commonResponse);
     }
 }

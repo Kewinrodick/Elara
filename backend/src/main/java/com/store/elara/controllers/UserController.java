@@ -67,7 +67,7 @@ public class UserController {
 
     // POST A USER #3
     @PostMapping("/register")
-    public ResponseEntity<UserDto> addUser(@RequestBody RegisterUserRequest request,
+    public ResponseEntity<UserDto> addUser(@RequestBody LoginRequest request,
     UriComponentsBuilder uriBuilder) {
 
         UserDto userDto = userService.add(request);

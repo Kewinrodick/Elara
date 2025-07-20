@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class UserService {
     private final JWTService jwtService;
 
 
-    public UserDto add(RegisterUserRequest request) {
+    public UserDto add(LoginRequest request) {
 
         User user = userMapper.toEntity(request);
 
@@ -98,14 +100,26 @@ public class UserService {
 
     }
 
-    public String login(RegisterUserRequest request) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getName(), request.getPassword()));
+    public CommonResponse login(LoginRequest request) {
+        CommonResponse response = new CommonResponse();
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getName(), request.getPassword()));
 
-            if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(request.getName());
-            }
-        return "Fail";
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtService.generateToken(userDetails);
+
+            response.setSucessMessage("Success");
+            response.setCode(200);
+            response.setData(token);
+            response.setStatus(ResponseStatus.SUCCESS);
+
+        }catch (Exception e) {
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setErrorMessage(e.getMessage());
+            response.setCode(403);
+        }
+            return response;
     }
 
 }

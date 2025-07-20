@@ -41,13 +41,6 @@ public class UserController {
 
     private final UserService userService;
 
-        // Made a comment
-    //Login User
-    @PostMapping("/login")
-    public String UserLogin(@RequestBody RegisterUserRequest request) {
-        return userService.login(request);
-    }
-
 
     // GET ALL USERS #1
     @GetMapping
@@ -121,7 +114,7 @@ public class UserController {
 
     // ADD A PRODUCT TO A USER'S WISHLIST
     @PostMapping("/{userId}/wishlist/{productId}/product")
-    public ResponseEntity<Void> registerUser(@PathVariable Long userId, @PathVariable Long productId) {
+    public ResponseEntity<Void> addToWishList(@PathVariable Long userId, @PathVariable Long productId) {
             User user = userRepositories.findById(userId).orElse(null);
             Product product = productRepositories.findById(productId).orElse(null);
             if(user == null || product == null){

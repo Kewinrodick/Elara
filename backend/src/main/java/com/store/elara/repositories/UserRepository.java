@@ -19,7 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "profile")
     Optional<User> findById(Long id);
 
-    Optional<User> findByName(String name);
 
-    User findUserByName(String username);
+    User findUserByName(String name);
+
+    boolean existsByName(String name);
+    boolean existsByEmail(String email);
 }

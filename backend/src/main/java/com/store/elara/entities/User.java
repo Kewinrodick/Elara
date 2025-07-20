@@ -2,6 +2,7 @@ package com.store.elara.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.store.elara.dtos.AuthRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,9 +35,6 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
-
-
-
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
@@ -78,5 +76,15 @@ public class User {
                 "id = " + id + ", " +
                 "name = " + name + ", " +
                 "email = " + email + ")";
+    }
+
+    @Column(unique = true, nullable = false)
+    private Roles role;
+
+    public User(AuthRequest authRequest) {
+        this.name = authRequest.getName();
+        this.email = authRequest.getEmail();
+        this.password = authRequest.getPassword();
+        this.role = authRequest.getRole();
     }
 }

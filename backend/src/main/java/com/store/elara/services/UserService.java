@@ -1,6 +1,7 @@
 package com.store.elara.services;
 
 import com.store.elara.dtos.*;
+import com.store.elara.entities.ResponseStatus;
 import com.store.elara.entities.User;
 import com.store.elara.mappers.UserMapper;
 import com.store.elara.repositories.UserRepository;
@@ -71,13 +72,40 @@ public class UserService {
 
     }
 
+    public CommonResponse signin(AuthRequest authRequest) {
+        CommonResponse response = new CommonResponse();
+        try {
+            if (userRepositories.existsByName(authRequest.getName())) {
+                throw new Exception("Username already exists");
+            }
+            if (userRepositories.existsByEmail(authRequest.getEmail())) {
+                throw new Exception("Email already exists");
+            }
+            authRequest.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+            User user = new User(authRequest);
+            userRepositories.save(user);
+            response.setStatus(ResponseStatus.SUCCESS);
+            response.setSucessMessage("Success");
+            response.setData(userMapper.toDto(user));
+            response.setCode(201);
+        }
+        catch (Exception e) {
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setErrorMessage(e.getMessage());
+            response.setCode(400);
+        }
+        return response;
+
+    }
+
     public String login(RegisterUserRequest request) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getName(), request.getPassword()));
 
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(request.getName());
-        }
+            if (authentication.isAuthenticated()) {
+                return jwtService.generateToken(request.getName());
+            }
         return "Fail";
     }
+
 }
